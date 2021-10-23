@@ -95,15 +95,123 @@ class displaymarklist(APIView):
             print(type(studentmark_list))
             serializer=studentmarklistSerializer(studentmark_list,many=True)
             print(serializer)
+            print(serializer.data)
+            print(type(serializer.data))
+            serializerdict=serializer.data
+            print(serializerdict)
+            '''json_data=JsonRenderer().renderer(serializer.data)
+            print(json_data)
+            return JsonResponse(serializer.data,safe=false)'''
+            json_data=JSONRenderer().render(serializer.data)
+            print(json_data)
+            resultdict={}
+            for data in serializerdict:
+                
+                rollno=data['rollno']
+                
+                print(rollno)
+                print(data)
+                name=data['name']
+                mark1=data['mark1']
+                mark2=data['mark2']
+                mark3=data['mark3']
+                mark4=data['mark4']
+                mark5=data['mark5']
+                '''
+                rollno=data.rollno
+                print(rollno)
+                name=data.name
+                mark1=data.mark1
+                mark2=data.mark2
+                mark3=data.mark3
+                mark4=data.mark3
+                mark5=data.mark4 '''
+                
+                total=mark1+mark2+mark3+mark4+mark5
+                print(rollno,name,mark1,mark2,mark3,mark4,mark5,total)
+
+                '''resultdict=[{'Rollno':rollno,'Name':name,'M1':mark1,'M2':mark2,'M3':mark3,'M4':mark4,'M5':mark5,'Total':total}]'''
+                resultdict["ROLLNO"]=rollno
+                resultdict["M1"]=mark1
+                resultdict["M2"]=mark2
+                resultdict["M3"]=mark3
+                resultdict["M4"]=mark4
+                resultdict["M5"]=mark5
+                resultdict["total"]=total
+                print(resultdict)
+                for i in resultdict:
+                    print(resultdict[i])
+                '''return Response(status=status.HTTP_200_OK, data={"studentmarklist":serializerdict})'''
+                    
+                
+                '''json_obj=[("ROLLNO"=rollno,"NAME"=name,"MARK1"=mark1,"MARK2"=mark2,"MARK3"=mark3,"MARK4"=mark4,"MARK5"=mark5,"TOTAL"=total)]
+                    print(json_obj)'''
+                    
+                
+                '''resultdict.update({"ROLLNO":rollno,"NAME":name,"MARK1":mark1,"MARK2":mark2,"MARK3":mark3,"MARK4":mark4,"MARK5":mark5,"TOTAL":total})'''
+                
+            '''resultdict['ROLLNO'].append(rollno)
+            resultdict['NAME'].append(name)
+            resultdict['MARK1'].append(mark1)
+            resultdict['MARK2'].append(mark2)
+            resultdict['MARK3'].append(mark3)
+            resultdict['MARK4'].append(mark4)
+            resultdict['MARK5'].append(mark5)
+            resultdict['TOTAL'].append(total)'''
+
+            '''print(resultdict) '''              
             
                     
             
             
-            return Response(status=status.HTTP_200_OK, data={"studentmarklist":serializer.data})
-        except:
-            print("Error")
+            return Response(status=status.HTTP_200_OK, data={"studentmarklist":resultdict}) 
+        except Exception as e:
+            print("Error",str(e))
             
+class displayaverage(APIView):
+    @csrf_exempt
+    def get(self,request):
+        try:
+            print("Inside get")
+            student_avg=studentmarks.objects.all()
+            print(student_avg)
+            print(type(student_avg))
+            serializer=studentmarklistSerializer(student_avg,many=True)
+            print(serializer)
+            print(serializer.data)
+            print(type(serializer.data))
+            serializerdict=serializer.data
+            print(serializerdict)
+            resultdict={}
+            avg_mark1=student_avg.aggregate(Avg("mark1"))
+            print(avg_mark1)
+            avg_mark2=student_avg.aggregate(Avg("mark2"))
+            print(avg_mark2)
+            avg_mark3=student_avg.aggregate(Avg("mark3"))
+            print(avg_mark3)
+            avg_mark4=student_avg.aggregate(Avg("mark4"))
+            print(avg_mark4)
+            avg_mark5=student_avg.aggregate(Avg("mark5"))
+            print(avg_mark5)
+            '''
+            resultdict.append({'AVGM1':avg_mark1})
+            resultdict.append({'AVGM2':avg_mark2})
+            resultdict.append({'AVGM3':avg_mark3})
+            resultdict.append({'AVGM4':avg_mark4})
+            resultdict.append({'AVGM5':avg_mark5})'''
+            
+            '''
+            avg_mark2=serializer.aggregate(Avg(data['mark2']))
+            avg_mark3=serializer.aggregate(Avg(data['mark3']))
+            avg_mark4=serializer.aggregate(Avg(data['mark4']))
+            avg_mark5=serializer.aggregate(Avg(data['mark5']))
+            '''
 
+            '''resultdict[{'AvgM1':avg_mark1,'AVGM2':avg_mark2,'AVGM3':avg_mark3,'AVGM4':avg_mark4,'AVGM5':avg_mark5}]'''
+            return Response(status=status.HTTP_200_OK, data=(avg_mark1,avg_mark2,avg_mark3,avg_mark4,avg_mark5))
+            '''return Response(status=status.HTTP_200_OK, data=resultdict)'''
+        except Exception as e:
+            print("Error",str(e))
                 
 
             
