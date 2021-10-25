@@ -94,19 +94,24 @@ class displaymarklist(APIView):
                 print(studentmarks.name)'''
             
             print(type(studentmark_list))
+            
             serializer=studentmarklistSerializer(studentmark_list,many=True)
             print(serializer)
             print(serializer.data)
             print(type(serializer.data))
             serializerdict=serializer.data
+            
+            serializerdict=studentmarklistSerializer(studentmark_list,many=True)
             print(serializerdict)
             '''json_data=JsonRenderer().renderer(serializer.data)
             print(json_data)
             return JsonResponse(serializer.data,safe=false)'''
-            json_data=JSONRenderer().render(serializer.data)
-            print(json_data)
-            resultdict={}
-            for data in serializerdict:
+            '''json_data=JSONRenderer().render(serializer.data)
+            print(json_data)'''
+            '''resultdict={}'''
+            all_students=[]
+            for data in serializerdict.data:
+                resultdict={}
                 
                 rollno=data['rollno']
                 
@@ -125,23 +130,27 @@ class displaymarklist(APIView):
                 mark1=data.mark1
                 mark2=data.mark2
                 mark3=data.mark3
-                mark4=data.mark3
-                mark5=data.mark4 '''
+                mark4=data.mark4
+                mark5=data.mark5 '''
                 
                 total=mark1+mark2+mark3+mark4+mark5
                 print(rollno,name,mark1,mark2,mark3,mark4,mark5,total)
 
                 '''resultdict=[{'Rollno':rollno,'Name':name,'M1':mark1,'M2':mark2,'M3':mark3,'M4':mark4,'M5':mark5,'Total':total}]'''
+                
                 resultdict["ROLLNO"]=rollno
-                resultdict["M1"]=mark1
-                resultdict["M2"]=mark2
-                resultdict["M3"]=mark3
-                resultdict["M4"]=mark4
-                resultdict["M5"]=mark5
-                resultdict["total"]=total
+                resultdict["SUBJECTMARK1"]=mark1
+                resultdict["SUBJECTMARK2"]=mark2
+                resultdict["SUBJECTMARK3"]=mark3
+                resultdict["SUBJECTMARK4"]=mark4
+                resultdict["SUBJECTMARK5"]=mark5
+                resultdict["TOTALMARKS"]=total
+                all_students.append(resultdict)
+                print(all_students)
                 print(resultdict)
+                '''
                 for i in resultdict:
-                    print(resultdict[i])
+                    print(resultdict[i]) '''
                 '''return Response(status=status.HTTP_200_OK, data={"studentmarklist":serializerdict})'''
                     
                 
@@ -165,7 +174,7 @@ class displaymarklist(APIView):
                     
             
             
-            return Response(status=status.HTTP_200_OK, data={"studentmarklist":resultdict}) 
+            return Response(status=status.HTTP_200_OK, data={"studentmarklist":all_students}) 
         except Exception as e:
             print("Error",str(e))
             
